@@ -16,8 +16,9 @@ let addButton = document.getElementById('btn');
 let searchButton = document.getElementById('search');
 let editButton = document.getElementById('edit');
 let editbtn = document.getElementById('editbtn');
+let tbody = document.getElementById('tbody')
 
-
+let gid = "";
 
 index = -1;
 
@@ -40,18 +41,16 @@ function displayAllStudents(){
     
     allStudents.forEach((element,index) => {
         let tr = document.createElement('tr');
+        tr.id = `row${index}`
         tr.innerHTML = `
             <td>${element.ID}</td>
             <td>${element.name}</td>
             <td>${element.email}</td>
             <td>${element.age}</td>
             <td>${element.grade}</td>
-            <td id="ed">
-              <div>${element.degree}</div>
-              <div class="ed1">
-                 <button  onclick="saveEditedData()">edit</button>
-                 <button id="delete">delete</button> 
-               </div>
+            <td id="ed">${element.degree}
+                 <button  class="editable" onclick="saveEditedData(row${index})">edit</button>
+                 <button  onclick="delete(row${index})">delete</button> 
             </td>
         `
         // console.log(index + 1)
@@ -116,34 +115,49 @@ function serach_name_email_degree(event) {
 
 }
 
-function saveEditedData(){
-    let allStudents = JSON.parse(localStorage.getItem("allStudents"));
+function saveEdited() {
+    if(gid === "") return;
+    console.log("clicked")
+    console.log(gid);
+    let row = document.getElementById(gid);
+    let updatedName = form.name.value;
+    let updatedEmail = form.email.value ;
+    let updatedCgpa = form.cgpa.value;
+    let updatedAge = form.age.value;
+    let updatedDegree = form.degree.value;
+
+    row.querySelector('td:nth-child(2)').innerHTML = updatedName;
+    row.querySelector('td:nth-child(3)').innerHTM =updatedEmail;
+    row.querySelector('td:nth-child(5)').innerHTML = updatedCgpa;
+    row.querySelector('td:nth-child(4)').innerHTML = updatedAge;
+    row.querySelector('td:nth-child(6)').firstChild.textContent = updatedDegree;
+    form.reset();
+    editButton.style.display = "none";
+    addButton.style.display = "block"
+
+}
+function saveEditedData(row){
+    // let allStudents = JSON.parse(localStorage.getItem("allStudents"));
     editButton.style.display = "block";
     addButton.style.display = "none"
-    let button = editbtn.parentNode.parentNode.parentNode.firstElementChild.value;
-    console.log(button);
-    if(index !== -1){
-        let currData = allStudents[index];
-        index = -1;
-        currData.name = form.name.value;
-        currData.email = form.email.value;
-        currData.age = form.age.value;
-        currData.grade = form.cgpa.value;
-        currData.degree = form.degree.value;
-    // let student = { ID: id, name: name, age: age, grade: grade, degree: degree, email: email };
-    // allStudents.push(student);
-    localStorage.setItem("allStudents", JSON.stringify(allStudents));
-    displayAllStudents();
-    form.reset()
-    }else{
-        return;
-    }
-    console.log(allStudents)
-    
+    gid = row.id;
+    // console.log(currId)
+    // let row = document.getElementById(currId);
+    // console.log(row)
+    form.name.value = row.querySelector('td:nth-child(2)').innerHTML;
+    form.email.value = row.querySelector('td:nth-child(3)').innerHTML;
+    form.cgpa.value = row.querySelector('td:nth-child(5)').innerHTML;
+    form.age.value  = row.querySelector('td:nth-child(4)').innerHTML;
+    form.degree.value = row.querySelector('td:nth-child(6)').firstChild.textContent;
+    console.log(gid)
 }
+
+
+
 
 
 addButton.addEventListener('click',addStudent);
 searchButton.addEventListener('input',serach_name_email_degree);
+editButton.addEventListener('click',saveEdited)
 // editbtn.addEventListener('click',saveEditedData);
 
