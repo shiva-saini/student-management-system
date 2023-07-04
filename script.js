@@ -4,8 +4,8 @@ const students = [
      { ID: 3, name: 'Charlie', age: 20, grade: 'C', degree:'Arts', email: 'charlie@example.com' }
 ];
 
-localStorage.setItem("allStudents", JSON.stringify(students));
-
+// localStorage.setItem("allStudents", JSON.stringify(students));
+let lastDeletedId = [];
 if(localStorage.getItem('allStudents') === null){
     localStorage.setItem("allStudents", JSON.stringify(students));
 }
@@ -38,19 +38,19 @@ function displayAllStudents(){
     let tbody = document.getElementById('tablebody');
     removeTableRows();
     // console.log(tbody)
-    
+    console.log(allStudents)
     allStudents.forEach((element,index) => {
         let tr = document.createElement('tr');
-        tr.id = `row${index}`
+        tr.id = `row_${index}`
         tr.innerHTML = `
-            <td>${element.ID}</td>
+            <td>${index}</td>
             <td>${element.name}</td>
             <td>${element.email}</td>
             <td>${element.age}</td>
             <td>${element.grade}</td>
             <td id="ed">${element.degree}
-                 <button  class="editable" onclick="saveEditedData(row${index})">edit</button>
-                 <button  onclick="delete(row${index})">delete</button> 
+                 <button  class="editable" onclick="saveEditedData(row_${index})">edit</button>
+                 <button  onclick="deleteStudent(row_${index})">delete</button> 
             </td>
         `
         // console.log(index + 1)
@@ -61,9 +61,10 @@ function displayAllStudents(){
 function displayDesiredStudents(desiredStudents){
     let tbody = document.getElementById('tablebody');
     removeTableRows();
+    console.log(desiredStudents);
     desiredStudents.forEach((element,index) => {
         let tr = document.createElement('tr');
-        tr.id = `row${index}`
+        tr.id = `row_${index}`
         tr.innerHTML = `
             <td>${element.ID}</td>
             <td>${element.name}</td>
@@ -71,8 +72,8 @@ function displayDesiredStudents(desiredStudents){
             <td>${element.age}</td>
             <td>${element.grade}</td>
             <td id="ed">${element.degree}
-                 <button  class="editable" onclick="saveEditedData(row${index})">edit</button>
-                 <button  onclick="delete(row${index})">delete</button> 
+                 <button  class="editable" onclick="saveEditedData(row_${index})">edit</button>
+                 <button  onclick="delete(row_${index})">delete</button> 
             </td>
         `
         // console.log(index + 1)
@@ -85,7 +86,14 @@ function displayDesiredStudents(desiredStudents){
 function addStudent() {
     let allStudents = JSON.parse(localStorage.getItem("allStudents"));
     // console.log(allStudents)
-    let id = allStudents.length + 1;
+    let id;
+    if(lastDeletedId.length == 0){
+        id = allStudents.length;
+    }else{
+        id = lastDeletedId[lastDeletedId.length-1];
+        lastDeletedId.splice(lastDeletedId.length-1,1);
+    }
+    
     let name = form.name.value;
     let email = form.email.value;
     let age = form.age.value;
@@ -97,9 +105,16 @@ function addStudent() {
     displayAllStudents();
     form.reset()
     // console.log(JSON.parse(localStorage.getItem("allStudents")))
-    
 }
 
+
+function deleteStudent(row){
+    let id = parseInt(row.id.split('_')[1]);
+    let allStudents = JSON.parse(localStorage.getItem('allStudents'))
+    allStudents.splice(id,1);
+    localStorage.setItem('allStudents',JSON.stringify(allStudents));
+    displayAllStudents();
+}
 
 
 
@@ -114,10 +129,18 @@ function serach_name_email_degree(event) {
         return;
      } else{
           let allStudents = JSON.parse(localStorage.getItem("allStudents"));
-          console.log(allStudents)
-          let allDesiredStudents = allStudents.filter((element) => {
-             return (element.name.toLowerCase() === input || element.email.toLowerCase() === input || element.degree.toLowerCase() === input);
-          })
+        //   console.log(allStudents)
+        let allDesiredStudents = allStudents.filter((element) => {
+            return (
+                element.name.toLowerCase() === input.toLowerCase() ||
+                element.email.toLowerCase() === input.toLowerCase() ||
+                element.degree.toLowerCase() === input.toLowerCase()
+            );
+        });
+        
+        //   let allDesiredStudents = allStudents.filter((element) => {
+        //      return (element.name.toLowerCase() === input || element.email.toLowerCase() === input || element.degree.toLowerCase() === input);
+        //   })
           displayDesiredStudents(allDesiredStudents);
      }
     
@@ -149,15 +172,26 @@ function serach_name_email_degree(event) {
 
 function saveEdited() {
     if(gid === "") return;
-    console.log("clicked")
-    console.log(gid);
+    // console.log(gid)
+    let objId = parseInt(gid.split('_')[1]);
+    console.log(objId)
+    // console.log(objId)
+    // console.log("clicked")
+    // console.log(gid);
     let row = document.getElementById(gid);
     let updatedName = form.name.value;
-    let updatedEmail = form.email.value ;
+    let updatedEmail = form.email.value;
     let updatedCgpa = form.cgpa.value;
     let updatedAge = form.age.value;
     let updatedDegree = form.degree.value;
 
+    let allStudents = JSON.parse(localStorage.getItem("allStudents"));
+    allStudents[objId].name = updatedName;
+    allStudents[objId].email = updatedEmail;
+    allStudents[objId].cgpa = updatedCgpa;
+    allStudents[objId].age = updatedAge;
+    allStudents[objId].degree = updatedDegree;
+    localStorage.setItem("allStudents",JSON.stringify(allStudents))
     row.querySelector('td:nth-child(2)').innerHTML = updatedName;
     row.querySelector('td:nth-child(3)').innerHTM =updatedEmail;
     row.querySelector('td:nth-child(5)').innerHTML = updatedCgpa;
@@ -181,7 +215,7 @@ function saveEditedData(row){
     form.cgpa.value = row.querySelector('td:nth-child(5)').innerHTML;
     form.age.value  = row.querySelector('td:nth-child(4)').innerHTML;
     form.degree.value = row.querySelector('td:nth-child(6)').firstChild.textContent;
-    console.log(gid)
+    // console.log(gid)
 }
 
 
