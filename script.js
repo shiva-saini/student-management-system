@@ -58,6 +58,30 @@ function displayAllStudents(){
     });
 }
 
+function displayDesiredStudents(desiredStudents){
+    let tbody = document.getElementById('tablebody');
+    removeTableRows();
+    desiredStudents.forEach((element,index) => {
+        let tr = document.createElement('tr');
+        tr.id = `row${index}`
+        tr.innerHTML = `
+            <td>${element.ID}</td>
+            <td>${element.name}</td>
+            <td>${element.email}</td>
+            <td>${element.age}</td>
+            <td>${element.grade}</td>
+            <td id="ed">${element.degree}
+                 <button  class="editable" onclick="saveEditedData(row${index})">edit</button>
+                 <button  onclick="delete(row${index})">delete</button> 
+            </td>
+        `
+        // console.log(index + 1)
+        tbody.appendChild(tr);
+    });
+
+
+}
+
 function addStudent() {
     let allStudents = JSON.parse(localStorage.getItem("allStudents"));
     // console.log(allStudents)
@@ -86,31 +110,39 @@ function serach_name_email_degree(event) {
         form.reset();
         // editButton.style.display = "none";
         addButton.style.display = 'block';
+        displayAllStudents();
         return;
-     } 
-    // console.log(input)
-    let allStudents = JSON.parse(localStorage.getItem("allStudents"));
-    console.log(allStudents)
-    for(let i=0;i<allStudents.length;i++){
-        let element = allStudents[i];
-        // console.log(element)
-        if(element.name.toLowerCase() === input || element.email.toLowerCase() === input || element.degree.toLowerCase() === input){
-            form.name.value = element.name;
-            form.email.value = element.email;
-            form.cgpa.value = element.grade;
-            form.age.value  = element.age;
-            form.degree.value = element.degree;
-            // console.log( form.name.value,form.email.value,form.cgpa.value,form.age.value,form.degree.value)
-            // editButton.style.display = "block";
-            addButton.style.display = 'none';
-            // index = i;
-            // allStudents.splice(i, 1);
-            // console.log(allStudents)
-            // console.log(JSON.parse(localStorage.getItem("allStudents")))
-            // allStudents.remove(allStudents[i]);
-            // localStorage.setItem("allStudents",JSON.stringify(allStudents))
-        }
-    }
+     } else{
+          let allStudents = JSON.parse(localStorage.getItem("allStudents"));
+          console.log(allStudents)
+          let allDesiredStudents = allStudents.filter((element) => {
+             return (element.name.toLowerCase() === input || element.email.toLowerCase() === input || element.degree.toLowerCase() === input);
+          })
+          displayDesiredStudents(allDesiredStudents);
+     }
+    
+   
+
+    // for(let i=0;i<allStudents.length;i++){
+    //     let element = allStudents[i];
+    //     // console.log(element)
+    //     if{
+    //         form.name.value = element.name;
+    //         form.email.value = element.email;
+    //         form.cgpa.value = element.grade;
+    //         form.age.value  = element.age;
+    //         form.degree.value = element.degree;
+    //         // console.log( form.name.value,form.email.value,form.cgpa.value,form.age.value,form.degree.value)
+    //         // editButton.style.display = "block";
+    //         addButton.style.display = 'none';
+    //         // index = i;
+    //         // allStudents.splice(i, 1);
+    //         // console.log(allStudents)
+    //         // console.log(JSON.parse(localStorage.getItem("allStudents")))
+    //         // allStudents.remove(allStudents[i]);
+    //         // localStorage.setItem("allStudents",JSON.stringify(allStudents))
+    //     }
+    // // }
     
 
 }
