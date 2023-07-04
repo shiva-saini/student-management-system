@@ -19,7 +19,6 @@ let editbtn = document.getElementById('editbtn');
 let tbody = document.getElementById('tbody')
 
 let gid = "";
-
 index = -1;
 
 function removeTableRows() {
@@ -31,7 +30,6 @@ function removeTableRows() {
         table.deleteRow(i);
     }
 }
-
 function displayAllStudents(){
     let allStudents = JSON.parse(localStorage.getItem("allStudents"));
     // console.log(allStudents)
@@ -57,7 +55,6 @@ function displayAllStudents(){
         tbody.appendChild(tr);
     });
 }
-
 function displayDesiredStudents(desiredStudents){
     let tbody = document.getElementById('tablebody');
     removeTableRows();
@@ -82,7 +79,6 @@ function displayDesiredStudents(desiredStudents){
 
 
 }
-
 function addStudent() {
     let allStudents = JSON.parse(localStorage.getItem("allStudents"));
     // console.log(allStudents)
@@ -106,18 +102,16 @@ function addStudent() {
     form.reset()
     // console.log(JSON.parse(localStorage.getItem("allStudents")))
 }
-
-
 function deleteStudent(row){
     let id = parseInt(row.id.split('_')[1]);
     let allStudents = JSON.parse(localStorage.getItem('allStudents'))
+    lastDeletedId.push(id);
     allStudents.splice(id,1);
     localStorage.setItem('allStudents',JSON.stringify(allStudents));
-    displayAllStudents();
+    console.log(row)
+    row.remove();
+    // displayAllStudents();
 }
-
-
-
 function serach_name_email_degree(event) {
      event.preventDefault();
      const input = event.target.value.toLowerCase();
@@ -169,7 +163,6 @@ function serach_name_email_degree(event) {
     
 
 }
-
 function saveEdited() {
     if(gid === "") return;
     // console.log(gid)
@@ -218,12 +211,10 @@ function saveEditedData(row){
     // console.log(gid)
 }
 
-
-
-
-
 addButton.addEventListener('click',addStudent);
 searchButton.addEventListener('input',serach_name_email_degree);
-editButton.addEventListener('click',saveEdited)
-// editbtn.addEventListener('click',saveEditedData);
+editButton.addEventListener('click',saveEdited);
+
+
+
 
