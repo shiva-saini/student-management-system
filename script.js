@@ -39,7 +39,13 @@ function displayAllStudents(){
     console.log(allStudents)
     allStudents.forEach((element,index) => {
         let tr = document.createElement('tr');
+        // let id1 = element.ID;
+        // if(id1 === undefined){
+        //     id1 = index;
+        // }
+        // console.log(id1)
         tr.id = `row_${index}`
+        // console.log(tr.id);
         tr.innerHTML = `
             <td>${index}</td>
             <td>${element.name}</td>
@@ -61,9 +67,14 @@ function displayDesiredStudents(desiredStudents){
     console.log(desiredStudents);
     desiredStudents.forEach((element,index) => {
         let tr = document.createElement('tr');
+        // let id1 = element.ID;
+        // if(id1 === undefined){
+        //     id1 = index;
+        // }
+        // console.log(id1)
         tr.id = `row_${index}`
         tr.innerHTML = `
-            <td>${element.ID}</td>
+            <td>${index}</td>
             <td>${element.name}</td>
             <td>${element.email}</td>
             <td>${element.age}</td>
@@ -103,6 +114,7 @@ function addStudent() {
     // console.log(JSON.parse(localStorage.getItem("allStudents")))
 }
 function deleteStudent(row){
+    console.log(row.id)
     let id = parseInt(row.id.split('_')[1]);
     let allStudents = JSON.parse(localStorage.getItem('allStudents'))
     lastDeletedId.push(id);
